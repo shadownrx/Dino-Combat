@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Juego del Dinosaurio</title>
+    <meta property="og:title" content="Mortal Dinosaurio: Un juego desarrollado por alumnos del IES" />
+    <meta property="og:description"
+        content="Este juego fue creado como proyecto por unos talentosos alumnos del IES, con personajes, música, y obstáculos para disfrutar." />
     <link rel="stylesheet" href="CSS/styles.css">
     <link rel=icon href="img/Dinosaurio.png" type="image/png">
 </head>
 
 <body>
-
 
     <!-- 🎮 MENÚ PRINCIPAL -->
     <div id="menu">
@@ -34,6 +36,8 @@
         <button onclick="backToMenu()">Volver</button>
     </div>
 
+
+
     <!-- 🕹️ JUEGO -->
     <div id="game" style="display: none;">
         <div id="dino"></div>
@@ -52,25 +56,12 @@
     <!-- 🎧 AUDIO (opcional si usás tu propia música) -->
     <audio id="bgm" src="audio/MortalSong.mp3" loop></audio>
     <audio id="jumpSound" src="audio/Salto.mp3" preload="auto"></audio>
-    <audio id="startSound" src="audio/MortalSong.mp3" preload="auto" loop></audio>
+    <audio id="startSound" src="audio/menu.mp3" preload="auto" loop></audio>
 
-
-
-
-    <div id="futuro">
-        <h3>✨ Próxima versión incluirá:</h3>
-        <ul>
-            <li>🧍 Nuevos personajes seleccionables</li>
-            <li>🌍 Modo multijugador local</li>
-            <li>🎮 Más obstáculos y escenarios</li>
-            <li>📊 Tabla de puntuaciones</li>
-            <li>🎵 Música de fondo personalizada por niveles</li>
-            <li>💾 Guardado automático de progreso</li>
-        </ul>
-    </div>
 
 
     <script src="JS/script.js"></script>
+    <script src="JS/Music.js"></script>
 </body>
 
 </html>

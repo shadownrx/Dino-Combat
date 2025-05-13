@@ -1,67 +1,51 @@
-// Variables globales
+// 🌍 Variables globales
 let selectedCharacter = null;
 let isJumping = false;
 let score = 0;
 let gameInterval = null;
 let gameRunning = false;
 
-// Referencias
+// 🎯 Referencias DOM
 const dino = document.getElementById("dino");
 const obstacle = document.getElementById("obstacle");
 const scoreDisplay = document.getElementById("score");
 const bgm = document.getElementById("bgm");
 const jumpSound = document.getElementById("jumpSound");
+const startSound = document.getElementById("startSound");
+const menu = document.getElementById("menu");
+const characterSelect = document.getElementById("character-select");
+const gameScreen = document.getElementById("game");
+const gameOverScreen = document.getElementById("game-over-screen");
+const finalScore = document.getElementById("final-score");
 
-// 🎵 Reproducir música
-function playMusic() {
-  bgm.play();
-}
-
-
+// 🎵 Música
 function playMusic() {
   bgm.play();
   jumpSound.play();
-  jumpSound.pause();
-}
-
-// 📍 Navegación de pantallas
-function showCharacterSelect() {
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("character-select").style.display = "block";
-}
-
-function backToMenu() {
-  document.getElementById("character-select").style.display = "none";
-  document.getElementById("menu").style.display = "block";
-}
-
-function returnToMenu() {
-  stopGame();
-  document.getElementById("game").style.display = "none";
-  document.getElementById("menu").style.display = "block";
-  scoreDisplay.textContent = "Puntaje: 0";
+  jumpSound.pause(); // Pre-carga para evitar delay
 }
 
 // 🧍 Selección de personaje
 function selectCharacter(src) {
   selectedCharacter = src;
-  dino.style.backgroundImage = `url('${selectedCharacter}')`;
-  dino.style.backgroundSize = "contain";
-  dino.style.backgroundRepeat = "no-repeat";
-  dino.style.width = "80px";
-  dino.style.height = "80px";
+  Object.assign(dino.style, {
+    backgroundImage: `url('${src}')`,
+    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    width: "80px",
+    height: "80px"
+  });
   startGame();
 }
 
-// 🚀 Iniciar juego
-function startGame() {
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("character-select").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  obstacle.style.animation = "moveObstacle 2s linear infinite";
+// 🔁 Inicio y reinicio de juego
+function initGame() {
   score = 0;
   gameRunning = true;
+  obstacle.style.animation = "moveObstacle 2s linear infinite";
+  scoreDisplay.textContent = "Puntaje: 0";
 
+  clearInterval(gameInterval);
   gameInterval = setInterval(() => {
     const dinoRect = dino.getBoundingClientRect();
     const obsRect = obstacle.getBoundingClientRect();
@@ -79,27 +63,40 @@ function startGame() {
   }, 100);
 }
 
-// ❌ Game Over
-function gameOver() {
-  stopGame();
-  document.getElementById("game").style.display = "none";
-  const gameOverScreen = document.getElementById("game-over-screen");
-  gameOverScreen.style.display = "flex";
-  document.getElementById("final-score").textContent = "Puntaje final: " + score;
+function startGame() {
+  startSound.currentTime = 0;
+  startSound.play().catch(() => {});
+  menu.style.display = "none";
+  characterSelect.style.display = "none";
+  gameScreen.style.display = "block";
+  initGame();
 }
 
-// 🛑 Detener juego
+function retryGame() {
+  gameOverScreen.style.display = "none";
+  gameScreen.style.display = "block";
+  initGame();
+}
+
+// ⛔ Game Over y Detención
+function gameOver() {
+  stopGame();
+  gameScreen.style.display = "none";
+  gameOverScreen.style.display = "flex";
+  finalScore.textContent = "Puntaje final: " + score;
+}
+
 function stopGame() {
   clearInterval(gameInterval);
   obstacle.style.animation = "none";
   gameRunning = false;
 }
 
-// ⬆️ Salto con voltereta
+// ⬆️ Salto
 function jump() {
   if (!isJumping && gameRunning) {
-    jumpSound.currentTime = 0; // Reinicia sonido si ya está en reproducción
-    jumpSound.play();   //Reproduce el sonido del salto
+    jumpSound.currentTime = 0;
+    jumpSound.play();
     dino.classList.add("jump");
     isJumping = true;
     setTimeout(() => {
@@ -109,48 +106,30 @@ function jump() {
   }
 }
 
-function retryGame() {
-  document.getElementById("game-over-screen").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  obstacle.style.animation = "moveObstacle 2s linear infinite";
-  score = 0;
-  scoreDisplay.textContent = "Puntaje: 0";
-  gameRunning = true;
-
-  gameInterval = setInterval(() => {
-    const dinoRect = dino.getBoundingClientRect();
-    const obsRect = obstacle.getBoundingClientRect();
-
-    if (
-      dinoRect.right > obsRect.left &&
-      dinoRect.left < obsRect.right &&
-      dinoRect.bottom > obsRect.top
-    ) {
-      gameOver();
-    } else {
-      score++;
-      scoreDisplay.textContent = "Puntaje: " + score;
-    }
-  }, 100);
+// 📺 Pantallas
+function showCharacterSelect() {
+  menu.style.display = "none";
+  characterSelect.style.display = "block";
 }
 
-function returnToMenuFromGameOver() {
+function backToMenu() {
+  characterSelect.style.display = "none";
+  menu.style.display = "block";
+}
+
+// 🔙 Volver al menú
+
+function returnToMenu() {
   stopGame();
-  document.getElementById("game-over-screen").style.display = "none";
-  document.getElementById("menu").style.display = "block";
+  startSound.pause();           // 🔇 Pausa la música
+  startSound.currentTime = 0;   // ⏮️ Opcional: reinicia desde el inicio
+  gameScreen.style.display = "none";
+  gameOverScreen.style.display = "none";
+  menu.style.display = "block";
   scoreDisplay.textContent = "Puntaje: 0";
 }
 
-document.addEventListener("keydown", function (event) {
-  if (event.code === "Space" || event.key === " " || event.key === "ArrowUp") {
-    jump();
-  }
-});
-
-document.addEventListener("touchstart", jump);
-
-
-
+// 🎯 Combo (decorativo)
 function showCombo() {
   const comboText = document.createElement("div");
   comboText.innerText = "¡Combo!";
@@ -159,31 +138,20 @@ function showCombo() {
   setTimeout(() => comboText.remove(), 1000);
 }
 
-function startGame() {
-  const startSound = document.getElementById("startSound");
-  startSound.currentTime = 0;
-  startSound.play().catch(() => {});
+// 🎮 Controles
+document.addEventListener("keydown", (event) => {
+  if (["Space", " ", "ArrowUp"].includes(event.code || event.key)) {
+    jump();
+  }
+});
 
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("character-select").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  obstacle.style.animation = "moveObstacle 2s linear infinite";
-  score = 0;
-  gameRunning = true;
+document.addEventListener("touchstart", jump);
 
-  gameInterval = setInterval(() => {
-    const dinoRect = dino.getBoundingClientRect();
-    const obsRect = obstacle.getBoundingClientRect();
-
-    if (
-      dinoRect.right > obsRect.left &&
-      dinoRect.left < obsRect.right &&
-      dinoRect.bottom > obsRect.top
-    ) {
-      gameOver();
-    } else if (gameRunning) {
-      score++;
-      scoreDisplay.textContent = "Puntaje: " + score;
-    }
-  }, 100);
+function returnToMenuFromGameOver() {
+  stopGame();
+  document.getElementById("game-over-screen").style.display = "none";
+  document.getElementById("menu").style.display = "block";
+  scoreDisplay.textContent = "Puntaje: 0";
 }
+
+

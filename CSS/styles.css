@@ -3,14 +3,17 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  text-align: center;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom, #222, #111);
-  color: white;
-  min-height: 100vh;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+  background-color: #4b0094; /* Color de fondo (ajústalo según tu preferencia) */
+  margin: 0;
 }
 
 #menu {
@@ -19,7 +22,6 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh; /* hace que ocupe toda la altura de la pantalla */
-  text-align: center;
 }
 /* Contenedores principales */
 #character-select, #game, #game-over-screen {
