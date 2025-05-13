@@ -1,4 +1,4 @@
-# 🕹️ DinoDrive - El juego inspirado en el Dino de Google, ¡pero con estilo!
+# 🕹️ DinoKombat - El juego inspirado en el Dino de Google, ¡pero con estilo!
 
 ¡Bienvenido a **DinoDrive**!  
 Un juego arcade hecho con **HTML**, **CSS** y **JavaScript**, inspirado en el clásico juego del dinosaurio de Google Chrome, pero con nuevos personajes, colores, música y muchas funciones extra.
