@@ -1,149 +1,157 @@
-body {
+/* Reset y tipografía base */
+* {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f0f0f0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom, #222, #111);
+  color: white;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* hace que ocupe toda la altura de la pantalla */
+  text-align: center;
+}
+/* Contenedores principales */
+#character-select, #game, #game-over-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;        /* Ocupa toda la altura de la pantalla */
+  width: 100vw;         /* Ocupa todo el ancho */
   text-align: center;
 }
 
-#menu, #character-select, #game {
-  padding-top: 50px;
+h1, h2 {
+  color: #f5c518;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 5px #000;
 }
 
 button {
-  padding: 10px 20px;
+  background: #f5c518;
+  color: #111;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
   margin: 10px;
-  font-size: 18px;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 0 #b39200;
 }
 
-#characters img {
-  width: 80px;
-  margin: 10px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: 0.2s;
-}
-
-#characters img:hover {
-  border: 2px solid #00aaff;
+button:hover {
+  background: #ffe55e;
+  transform: translateY(-2px);
 }
 
 #game {
   position: relative;
-  height: 300px;
-  background-color: #fff;
+  width: 100%;
+  height: 60vh;
+  background: url('/img/Fondo.jpg') no-repeat center center/cover;
+  border: 3px solid #f5c518;
   overflow: hidden;
-  border: 2px solid #000;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #f5c518;
 }
 
 #dino {
   position: absolute;
   bottom: 0;
   left: 50px;
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   background-size: contain;
   background-repeat: no-repeat;
+  transition: bottom 0.3s ease;
 }
 
 .jump {
-  animation: jump 0.4s ease;
+  animation: saltoMortal 0.6s ease;
 }
 
-@keyframes jump {
-  0%   { bottom: 0; }
-  50%  { bottom: 100px; }
-  100% { bottom: 0; }
+@keyframes saltoMortal {
+  0% {
+    bottom: 0;
+    transform: rotate(0deg);
+  }
+  30% {
+    bottom: 100px;
+    transform: rotate(180deg);
+  }
+  60% {
+    bottom: 120px;
+    transform: rotate(270deg);
+  }
+  100% {
+    bottom: 0;
+    transform: rotate(360deg);
+  }
 }
+
 
 #obstacle {
   position: absolute;
   bottom: 0;
-  left: 100%;
-  width: 40px;
+  right: -60px;
+  width: 60px;
   height: 60px;
-  background-color: #c62828;
+  background: url('/img/Obstaculo.png') no-repeat center/contain;
   animation: moveObstacle 2s linear infinite;
 }
 
 @keyframes moveObstacle {
-  0%   { left: 100%; }
-  100% { left: -60px; }
+  from { right: -60px; }
+  to { right: 100%; }
 }
 
-#score {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-#btn-menu {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 8px 15px;
-  font-size: 16px;
-  background-color: #009688;
-  color: white;
-  border: none;
-  border-radius: 5px;
+#character-select img {
+  width: 100px;
+  height: 100px;
+  margin: 15px;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  transition: transform 0.2s ease, border-color 0.3s;
   cursor: pointer;
-  z-index: 1000;
 }
 
-#btn-menu:hover {
-  background-color: #00796b;
+#character-select img:hover {
+  transform: scale(1.1);
+  border-color: #f5c518;
 }
 
-#music-screen {
-  text-align: center;
-  padding: 20px;
-}
-
-#music-selector {
-  font-size: 16px;
-  padding: 8px;
-}
-
-#music-player iframe {
-  margin-top: 20px;
-  width: 300px;
-  height: 170px;
-  border: none;
-}
-
-#bg-music {
-  margin-top: 20px;
-  width: 300px;
-}
-
-#version-actual,
-#futuro {
-  background-color: #f8f8f8;
-  padding: 15px;
-  margin: 20px auto;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
-  max-width: 400px;
-  text-align: left;
-}
-
-#version-actual h3,
-#futuro h3 {
-  margin-top: 0;
+#game-over-screen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
   text-align: center;
 }
 
-#version-actual ul,
-#futuro ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-#version-actual li,
-#futuro li {
+#game-over-screen h2 {
+  font-size: 2.5em;
   margin-bottom: 10px;
-  font-size: 16px;
+}
+
+#game-over-screen p {
+  font-size: 1.3em;
+  margin-bottom: 20px;
 }

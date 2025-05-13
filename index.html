@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Juego del Dinosaurio</title>
     <link rel="stylesheet" href="CSS/styles.css">
+    <link rel=icon href="img/Dinosaurio.png" type="image/png">
 </head>
 
 <body>
@@ -35,6 +36,13 @@
         <div id="obstacle"></div>
         <div id="score">Puntaje: 0</div>
         <button id="btn-menu" onclick="returnToMenu()">Volver al menú</button>
+    </div>
+
+    <div id="game-over-screen" style="display: none;">
+        <h2>💥 Game Over 💥</h2>
+        <p id="final-score"></p>
+        <button onclick="retryGame()">Reintentar</button>
+        <button onclick="returnToMenuFromGameOver()">🏠 Volver al Menú</button>
     </div>
 
     <!-- 🎧 AUDIO (opcional si usás tu propia música) -->

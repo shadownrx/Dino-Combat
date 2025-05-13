@@ -1,7 +1,22 @@
-let selectedCharacter = "img/auto1.png";
-let score = 0;
+// Variables globales
+let selectedCharacter = null;
 let isJumping = false;
+let score = 0;
+let gameInterval = null;
+let gameRunning = false;
 
+// Referencias
+const dino = document.getElementById("dino");
+const obstacle = document.getElementById("obstacle");
+const scoreDisplay = document.getElementById("score");
+const bgm = document.getElementById("bgm");
+
+// 🎵 Reproducir música
+function playMusic() {
+  bgm.play();
+}
+
+// 📍 Navegación de pantallas
 function showCharacterSelect() {
   document.getElementById("menu").style.display = "none";
   document.getElementById("character-select").style.display = "block";
@@ -12,54 +27,32 @@ function backToMenu() {
   document.getElementById("menu").style.display = "block";
 }
 
-function selectCharacter(imageSrc) {
-  selectedCharacter = imageSrc;
-  document.getElementById("preview-image").src = imageSrc; // <-- Actualiza vista previa
-  alert("Seleccionaste tu personaje.");
+function returnToMenu() {
+  stopGame();
+  document.getElementById("game").style.display = "none";
+  document.getElementById("menu").style.display = "block";
+  scoreDisplay.textContent = "Puntaje: 0";
 }
 
+// 🧍 Selección de personaje
+function selectCharacter(src) {
+  selectedCharacter = src;
+  dino.style.backgroundImage = `url('${selectedCharacter}')`;
+  dino.style.backgroundSize = "contain";
+  dino.style.backgroundRepeat = "no-repeat";
+  dino.style.width = "80px";
+  dino.style.height = "80px";
+  startGame();
+}
 
+// 🚀 Iniciar juego
 function startGame() {
   document.getElementById("menu").style.display = "none";
   document.getElementById("character-select").style.display = "none";
   document.getElementById("game").style.display = "block";
-
-  const dino = document.getElementById("dino");
-  dino.style.backgroundImage = `url('${selectedCharacter}')`;
-
-  // Comienza la detección de colisiones
-  gameLoop();
-}
-
-function playMusic() {
-  const music = document.getElementById("bgm");
-  music.play();
-}
-
-// SALTO
-document.addEventListener("keydown", function (e) {
-  if (e.code === "Space") jump();
-});
-
-document.addEventListener("touchstart", jump);
-
-function jump() {
-  const dino = document.getElementById("dino");
-  if (!isJumping) {
-    isJumping = true;
-    dino.classList.add("jump");
-    setTimeout(() => {
-      dino.classList.remove("jump");
-      isJumping = false;
-    }, 400);
-  }
-}
-
-// GAME LOOP Y COLISIONES
-function gameLoop() {
-  const dino = document.getElementById("dino");
-  const obstacle = document.getElementById("obstacle");
-  const scoreDisplay = document.getElementById("score");
+  obstacle.style.animation = "moveObstacle 2s linear infinite";
+  score = 0;
+  gameRunning = true;
 
   gameInterval = setInterval(() => {
     const dinoRect = dino.getBoundingClientRect();
@@ -70,8 +63,60 @@ function gameLoop() {
       dinoRect.left < obsRect.right &&
       dinoRect.bottom > obsRect.top
     ) {
-      alert("💥 ¡Game Over! Puntaje: " + score);
-      score = 0;
+      gameOver();
+    } else if (gameRunning) {
+      score++;
+      scoreDisplay.textContent = "Puntaje: " + score;
+    }
+  }, 100);
+}
+
+// ❌ Game Over
+function gameOver() {
+  stopGame();
+  document.getElementById("game").style.display = "none";
+  const gameOverScreen = document.getElementById("game-over-screen");
+  gameOverScreen.style.display = "flex";
+  document.getElementById("final-score").textContent = "Puntaje final: " + score;
+}
+
+// 🛑 Detener juego
+function stopGame() {
+  clearInterval(gameInterval);
+  obstacle.style.animation = "none";
+  gameRunning = false;
+}
+
+// ⬆️ Salto con voltereta
+function jump() {
+  if (!isJumping && gameRunning) {
+    dino.classList.add("jump");
+    isJumping = true;
+    setTimeout(() => {
+      dino.classList.remove("jump");
+      isJumping = false;
+    }, 600);
+  }
+}
+
+function retryGame() {
+  document.getElementById("game-over-screen").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  obstacle.style.animation = "moveObstacle 2s linear infinite";
+  score = 0;
+  scoreDisplay.textContent = "Puntaje: 0";
+  gameRunning = true;
+
+  gameInterval = setInterval(() => {
+    const dinoRect = dino.getBoundingClientRect();
+    const obsRect = obstacle.getBoundingClientRect();
+
+    if (
+      dinoRect.right > obsRect.left &&
+      dinoRect.left < obsRect.right &&
+      dinoRect.bottom > obsRect.top
+    ) {
+      gameOver();
     } else {
       score++;
       scoreDisplay.textContent = "Puntaje: " + score;
@@ -79,46 +124,17 @@ function gameLoop() {
   }, 100);
 }
 
-
-let gameInterval = null; // Guardamos la referencia para detenerlo
-
-function returnToMenu() {
-  clearInterval(gameInterval); // Detenemos el loop del juego
-  score = 0;
-  document.getElementById("game").style.display = "none";
+function returnToMenuFromGameOver() {
+  stopGame();
+  document.getElementById("game-over-screen").style.display = "none";
   document.getElementById("menu").style.display = "block";
-  document.getElementById("score").textContent = "Puntaje: 0";
-
-  // Reiniciar posiciones o animaciones si es necesario
+  scoreDisplay.textContent = "Puntaje: 0";
 }
 
-function goToMusic() {
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("music-screen").style.display = "block";
-}
-
-document.getElementById("music-selector").addEventListener("change", function () {
-  const url = this.value;
-
-  if (url === "none") {
-    document.getElementById("music-player").innerHTML = "";
-    return;
-  }
-
-  document.getElementById("music-player").innerHTML = `
-    <iframe src="${url}" allow="autoplay" allowfullscreen></iframe>
-  `;
-});
-
-const musicPlayer = document.getElementById("bg-music");
-const fileInput = document.getElementById("music-upload");
-
-fileInput.addEventListener("change", function () {
-  const file = this.files[0];
-
-  if (file) {
-    const url = URL.createObjectURL(file);
-    musicPlayer.src = url;
-    musicPlayer.play();
+document.addEventListener("keydown", function (event) {
+  if (event.code === "Space" || event.key === " " || event.key === "ArrowUp") {
+    jump();
   }
 });
+
+document.addEventListener("touchstart", jump);
