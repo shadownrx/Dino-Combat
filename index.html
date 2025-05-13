@@ -1,22 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego del dino</title>
+    <title>Juego del Dinosaurio</title>
     <link rel="stylesheet" href="CSS/styles.css">
 </head>
 
 <body>
-    <div id="game">
+
+
+    <!-- 🎮 MENÚ PRINCIPAL -->
+    <div id="menu">
+        <h1> Mortal Dinosaurio</h1>
+        <button onclick="showCharacterSelect()">Elegir personaje</button>
+        <button onclick="startGame()">Jugar</button>
+        <button onclick="playMusic()">🎵 Música</button>
+    </div>
+
+    <!-- 👥 SELECCIÓN DE PERSONAJE -->
+    <div id="character-select" style="display: none;">
+        <h2>Elegí tu personaje</h2>
+        <div id="characters">
+            <img src="img/shan sun.png" onclick="selectCharacter('img/shan sun.png')">
+            <img src="img/Scorpion.png" onclick="selectCharacter('img/Scorpion.png')">
+            <img src="img/shan sun.png" onclick="selectCharacter('img/shan sun.png')">
+        </div>
+        <button onclick="backToMenu()">Volver</button>
+    </div>
+
+    <!-- 🕹️ JUEGO -->
+    <div id="game" style="display: none;">
         <div id="dino"></div>
         <div id="obstacle"></div>
         <div id="score">Puntaje: 0</div>
+        <button id="btn-menu" onclick="returnToMenu()">Volver al menú</button>
     </div>
 
-    <button onclick="playMusic()">Reproducir</button>
-    <div id="music-container"></div>
+    <!-- 🎧 AUDIO (opcional si usás tu propia música) -->
+    <audio id="bgm" src="audio/MortalSong.mp3" loop></audio>
+
+
+
+    <div id="futuro">
+        <h3>✨ Próxima versión incluirá:</h3>
+        <ul>
+            <li>🧍 Nuevos personajes seleccionables</li>
+            <li>🌍 Modo multijugador local</li>
+            <li>🎮 Más obstáculos y escenarios</li>
+            <li>📊 Tabla de puntuaciones</li>
+            <li>🎵 Música de fondo personalizada por niveles</li>
+            <li>💾 Guardado automático de progreso</li>
+        </ul>
+    </div>
+
 
     <script src="JS/script.js"></script>
 </body>
