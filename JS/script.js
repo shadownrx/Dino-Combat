@@ -10,10 +10,18 @@ const dino = document.getElementById("dino");
 const obstacle = document.getElementById("obstacle");
 const scoreDisplay = document.getElementById("score");
 const bgm = document.getElementById("bgm");
+const jumpSound = document.getElementById("jumpSound");
 
 // 🎵 Reproducir música
 function playMusic() {
   bgm.play();
+}
+
+
+function playMusic() {
+  bgm.play();
+  jumpSound.play();
+  jumpSound.pause();
 }
 
 // 📍 Navegación de pantallas
@@ -90,6 +98,8 @@ function stopGame() {
 // ⬆️ Salto con voltereta
 function jump() {
   if (!isJumping && gameRunning) {
+    jumpSound.currentTime = 0; // Reinicia sonido si ya está en reproducción
+    jumpSound.play();   //Reproduce el sonido del salto
     dino.classList.add("jump");
     isJumping = true;
     setTimeout(() => {
@@ -138,3 +148,42 @@ document.addEventListener("keydown", function (event) {
 });
 
 document.addEventListener("touchstart", jump);
+
+
+
+function showCombo() {
+  const comboText = document.createElement("div");
+  comboText.innerText = "¡Combo!";
+  comboText.className = "combo";
+  document.body.appendChild(comboText);
+  setTimeout(() => comboText.remove(), 1000);
+}
+
+function startGame() {
+  const startSound = document.getElementById("startSound");
+  startSound.currentTime = 0;
+  startSound.play().catch(() => {});
+
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("character-select").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  obstacle.style.animation = "moveObstacle 2s linear infinite";
+  score = 0;
+  gameRunning = true;
+
+  gameInterval = setInterval(() => {
+    const dinoRect = dino.getBoundingClientRect();
+    const obsRect = obstacle.getBoundingClientRect();
+
+    if (
+      dinoRect.right > obsRect.left &&
+      dinoRect.left < obsRect.right &&
+      dinoRect.bottom > obsRect.top
+    ) {
+      gameOver();
+    } else if (gameRunning) {
+      score++;
+      scoreDisplay.textContent = "Puntaje: " + score;
+    }
+  }, 100);
+}
