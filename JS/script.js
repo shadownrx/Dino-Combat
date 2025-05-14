@@ -81,6 +81,7 @@ function initGame() {
     } else if (gameRunning) {
       score++;
       scoreDisplay.textContent = "Puntaje: " + score;
+      checkAchievements(score);
 
       // Incrementa monedas cada vez que el puntaje sea múltiplo de 50
       if (score - lastCoinScore >= 50) {
@@ -208,4 +209,39 @@ function showCoinEarned(amount = 1) {
   document.body.appendChild(coinMsg);
   setTimeout(() => coinMsg.remove(), 1000);
   console.log(`Monedas ganadas: +${amount}`);
+}
+
+function checkAchievements(score) {
+  if (score >= 100 && !localStorage.getItem('logro100')) {
+    showAchievement("🔥 Hasta aquí nomás podés llegar, máquina...");
+    localStorage.setItem('logro100', 'true');
+  }
+
+  if (score >= 200 && !localStorage.getItem('logro200')) {
+    showAchievement("🧠 ¿Tenés un pacto con los dioses del joystick?");
+    localStorage.setItem('logro200', 'true');
+  }
+
+  if (score >= 300 && !localStorage.getItem('logro300')) {
+    showAchievement("🚀 ¿Estás jugando o haciendo historia?");
+    localStorage.setItem('logro300', 'true');
+  }
+
+  if (score >= 500 && !localStorage.getItem('logro500')) {
+    showAchievement("👑 Sos el rey del salto, no hay con qué darte.");
+    localStorage.setItem('logro500', 'true');
+  }
+
+  if (score >= 1000 && !localStorage.getItem('logro1000')) {
+    showAchievement("💥 ¡Basta, vas a romper el juego!");
+    localStorage.setItem('logro1000', 'true');
+  }
+}
+
+function showAchievement(message) {
+  const achievementMsg = document.createElement("div");
+  achievementMsg.className = "achievement-message";
+  achievementMsg.innerText = message;
+  document.body.appendChild(achievementMsg);
+  setTimeout(() => achievementMsg.remove(), 2500);
 }

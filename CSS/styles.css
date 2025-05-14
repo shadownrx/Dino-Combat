@@ -379,3 +379,25 @@ button:hover {
   margin-top: 50px; /* Ajusta el espacio encima de la imagen */
 }
 
+.achievement-message {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #facc15;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 9999;
+  box-shadow: 0 0 20px #facc15;
+  animation: fadeInOut 2.5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.9); }
+  10% { opacity: 1; transform: translateX(-50%) scale(1); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.9); }
+}
