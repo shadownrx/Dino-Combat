@@ -84,10 +84,16 @@ function initGame() {
 
       // Incrementa monedas cada vez que el puntaje sea múltiplo de 50
       if (score - lastCoinScore >= 50) {
-        nederCoins++;
-        lastCoinScore = score;  // Actualiza el último puntaje para monedas
+        let coinsToAdd = 1;
+        if (score >= 1000) coinsToAdd = 30;
+        else if (score >= 600) coinsToAdd = 20;
+        else if (score >= 300) coinsToAdd = 10;
+        else if (score >= 100) coinsToAdd = 5;
+
+        nederCoins += coinsToAdd;
+        lastCoinScore = score;
         document.getElementById("coins").textContent = `🪙 Neder Coins: ${nederCoins}`;
-        showCoinEarned();
+        showCoinEarned(coinsToAdd);
       }
     }
   }, 100);
@@ -96,7 +102,7 @@ function initGame() {
 
 function startGame() {
   startSound.currentTime = 0;
-  startSound.play().catch(() => {});
+  startSound.play().catch(() => { });
   fadeOut(menu);
   fadeOut(characterSelect);
   fadeIn(gameScreen);
@@ -195,11 +201,11 @@ function showCharacterName(name) {
   setTimeout(() => nameBanner.remove(), 2000);
 }
 
-function showCoinEarned() {
+function showCoinEarned(amount = 1) {
   const coinMsg = document.createElement("div");
   coinMsg.className = "coin-earned";
-  coinMsg.innerText = "+1 Neder Coin!";
+  coinMsg.innerText = `+${amount} Neder Coin${amount > 1 ? 's' : ''}!`;
   document.body.appendChild(coinMsg);
-  setTimeout(() => coinMsg.remove(), 1000);  // El mensaje desaparece después de 1 segundo
-  console.log("Moneda ganada!"); // Verifica si la función se ejecuta
+  setTimeout(() => coinMsg.remove(), 1000);
+  console.log(`Monedas ganadas: +${amount}`);
 }
