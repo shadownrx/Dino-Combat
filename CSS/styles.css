@@ -12,7 +12,7 @@ body {
   align-items: center;
   text-align: center;
   height: 100vh;
-  background-color: #4b0094;
+  background-color: #000000;
   margin: 0;
   font-family: 'Arial', sans-serif;
   animation: fadeInBody 1.5s ease;
@@ -365,3 +365,17 @@ button:hover {
     opacity: 0;
   }
 }
+
+#home-title {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  max-width: 600px; /* Ajusta el tamaño máximo según sea necesario */
+}
+
+#home-title-container {
+  text-align: center;
+  margin-top: 50px; /* Ajusta el espacio encima de la imagen */
+}
+
