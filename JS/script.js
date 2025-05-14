@@ -9,7 +9,6 @@ let gameRunning = false;
 const dino = document.getElementById("dino");
 const obstacle = document.getElementById("obstacle");
 const scoreDisplay = document.getElementById("score");
-const bgm = document.getElementById("bgm");
 const jumpSound = document.getElementById("jumpSound");
 const startSound = document.getElementById("startSound");
 const menu = document.getElementById("menu");
@@ -22,11 +21,12 @@ const finalScore = document.getElementById("final-score");
 function playMusic() {
   bgm.play();
   jumpSound.play();
-  jumpSound.pause(); // Pre-carga para evitar delay
+  jumpSound.pause(); // Precarga
 }
 
 // 🧍 Selección de personaje
 function selectCharacter(src) {
+  if (!src) return;
   selectedCharacter = src;
   Object.assign(dino.style, {
     backgroundImage: `url('${src}')`,
@@ -36,6 +36,21 @@ function selectCharacter(src) {
     height: "80px"
   });
   startGame();
+}
+
+// ✨ Pantallas (transiciones)
+function fadeIn(element) {
+  element.style.opacity = 0;
+  element.style.display = "flex";
+  setTimeout(() => (element.style.opacity = 1), 10);
+}
+
+function fadeOut(element, callback) {
+  element.style.opacity = 0;
+  setTimeout(() => {
+    element.style.display = "none";
+    if (callback) callback();
+  }, 300);
 }
 
 // 🔁 Inicio y reinicio de juego
@@ -66,24 +81,27 @@ function initGame() {
 function startGame() {
   startSound.currentTime = 0;
   startSound.play().catch(() => {});
-  menu.style.display = "none";
-  characterSelect.style.display = "none";
-  gameScreen.style.display = "block";
+  fadeOut(menu);
+  fadeOut(characterSelect);
+  fadeIn(gameScreen);
   initGame();
 }
 
 function retryGame() {
-  gameOverScreen.style.display = "none";
-  gameScreen.style.display = "block";
-  initGame();
+  fadeOut(gameOverScreen, () => {
+    fadeIn(gameScreen);
+    initGame();
+  });
 }
 
 // ⛔ Game Over y Detención
 function gameOver() {
   stopGame();
-  gameScreen.style.display = "none";
-  gameOverScreen.style.display = "flex";
-  finalScore.textContent = "Puntaje final: " + score;
+  shakeElement(dino);
+  fadeOut(gameScreen, () => {
+    finalScore.textContent = "Puntaje final: " + score;
+    fadeIn(gameOverScreen);
+  });
 }
 
 function stopGame() {
@@ -106,30 +124,7 @@ function jump() {
   }
 }
 
-// 📺 Pantallas
-function showCharacterSelect() {
-  menu.style.display = "none";
-  characterSelect.style.display = "block";
-}
-
-function backToMenu() {
-  characterSelect.style.display = "none";
-  menu.style.display = "block";
-}
-
-// 🔙 Volver al menú
-
-function returnToMenu() {
-  stopGame();
-  startSound.pause();           // 🔇 Pausa la música
-  startSound.currentTime = 0;   // ⏮️ Opcional: reinicia desde el inicio
-  gameScreen.style.display = "none";
-  gameOverScreen.style.display = "none";
-  menu.style.display = "block";
-  scoreDisplay.textContent = "Puntaje: 0";
-}
-
-// 🎯 Combo (decorativo)
+// 🎯 Combo decorativo
 function showCombo() {
   const comboText = document.createElement("div");
   comboText.innerText = "¡Combo!";
@@ -137,6 +132,24 @@ function showCombo() {
   document.body.appendChild(comboText);
   setTimeout(() => comboText.remove(), 1000);
 }
+
+// 💥 Sacudida al dino
+function shakeElement(el) {
+  el.style.animation = "shake 0.5s";
+  el.addEventListener("animationend", () => {
+    el.style.animation = "";
+  }, { once: true });
+}
+
+// 📺 Pantallas
+function showCharacterSelect() {
+  fadeOut(menu, () => fadeIn(characterSelect));
+}
+
+function backToMenu() {
+  fadeOut(characterSelect, () => fadeIn(menu));
+}
+
 
 // 🎮 Controles
 document.addEventListener("keydown", (event) => {
@@ -147,11 +160,13 @@ document.addEventListener("keydown", (event) => {
 
 document.addEventListener("touchstart", jump);
 
+// 🎵 Música de fondo
 function returnToMenuFromGameOver() {
   stopGame();
-  document.getElementById("game-over-screen").style.display = "none";
-  document.getElementById("menu").style.display = "block";
+  bgm.pause();
+  bgm.currentTime = 0;
+  startSound.pause();
+  startSound.currentTime = 0;
+  fadeOut(gameOverScreen, () => fadeIn(menu));
   scoreDisplay.textContent = "Puntaje: 0";
 }
-
-

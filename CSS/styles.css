@@ -12,32 +12,98 @@ body {
   align-items: center;
   text-align: center;
   height: 100vh;
-  background-color: #4b0094; /* Color de fondo (ajústalo según tu preferencia) */
+  background-color: #4b0094;
   margin: 0;
+  font-family: 'Arial', sans-serif;
+  animation: fadeInBody 1.5s ease;
 }
 
-#menu {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh; /* hace que ocupe toda la altura de la pantalla */
+/* Fade de entrada general */
+@keyframes fadeInBody {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
-/* Contenedores principales */
-#character-select, #game, #game-over-screen {
+
+#menu,
+#character-select,
+#game,
+#game-over-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;        /* Ocupa toda la altura de la pantalla */
-  width: 100vw;         /* Ocupa todo el ancho */
+  height: 100vh;
+  width: 100vw;
   text-align: center;
+  animation: fadeInUp 1s ease;
 }
 
-h1, h2 {
+#menu,
+#character-select,
+#game,
+#game-over-screen {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0);
+  }
+
+  25% {
+    transform: translate(-5px, 5px);
+  }
+
+  50% {
+    transform: translate(5px, -5px);
+  }
+
+  75% {
+    transform: translate(-5px, 5px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
+}
+
+/* Fade + Slide up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1,
+h2 {
   color: #f5c518;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 5px #000;
+  animation: zoomIn 1s ease;
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 button {
@@ -50,8 +116,25 @@ button {
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
   box-shadow: 0 4px 0 #b39200;
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.4s;
+}
+
+button:hover::after {
+  left: 100%;
 }
 
 button:hover {
@@ -59,6 +142,7 @@ button:hover {
   transform: translateY(-2px);
 }
 
+/* GAME */
 #game {
   position: relative;
   width: 100%;
@@ -68,10 +152,18 @@ button:hover {
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 0 15px #f5c518;
-  animation: scrollBg 20s linear infinite
+  animation: scrollBg 20s linear infinite;
 }
 
+@keyframes scrollBg {
+  0% {
+    background-position-y: 0;
+  }
 
+  100% {
+    background-position-y: -1000px;
+  }
+}
 
 #dino {
   position: absolute;
@@ -84,6 +176,23 @@ button:hover {
   transform: translateY(0);
 }
 
+/* Flotado separado como clase */
+.floating {
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
 .jump {
   animation: saltoMortal 0.6s ease;
 }
@@ -92,19 +201,19 @@ button:hover {
   0% {
     transform: translateY(0) rotate(0deg);
   }
+
   30% {
     transform: translateY(-100px) rotate(180deg);
   }
+
   60% {
     transform: translateY(-120px) rotate(270deg);
   }
+
   100% {
     transform: translateY(0) rotate(360deg);
   }
 }
-
-
-
 
 #obstacle {
   position: absolute;
@@ -117,17 +226,23 @@ button:hover {
 }
 
 @keyframes moveObstacle {
-  from { right: -60px; }
-  to { right: 100%; }
+  from {
+    right: -60px;
+  }
+
+  to {
+    right: 100%;
+  }
 }
 
+/* Selector de personajes */
 #character-select img {
   width: 100px;
   height: 100px;
   margin: 15px;
   border: 3px solid transparent;
   border-radius: 12px;
-  transition: transform 0.2s ease, border-color 0.3s;
+  transition: transform 0.3s ease, border-color 0.3s;
   cursor: pointer;
 }
 
@@ -136,9 +251,13 @@ button:hover {
   border-color: #f5c518;
 }
 
+/* Pantalla de Game Over */
 #game-over-screen {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.9);
   color: white;
   display: flex;
@@ -147,23 +266,22 @@ button:hover {
   justify-content: center;
   z-index: 999;
   text-align: center;
+  animation: fadeInUp 1s ease;
 }
 
 #game-over-screen h2 {
   font-size: 2.5em;
   margin-bottom: 10px;
+  animation: pop 0.8s ease;
 }
 
 #game-over-screen p {
   font-size: 1.3em;
   margin-bottom: 20px;
+  animation: fadeInBody 1.2s ease;
 }
 
-@keyframes scrollBg {
-  0% { background-position-y: 0; }
-  100% { background-position-y: -1000px; }
-}
-
+/* Combo animado */
 .combo {
   position: absolute;
   top: 20%;
@@ -176,7 +294,18 @@ button:hover {
 }
 
 @keyframes pop {
-  0% { transform: scale(0.5) translateX(-50%); opacity: 0; }
-  50% { transform: scale(1.2) translateX(-50%); opacity: 1; }
-  100% { transform: scale(1) translateX(-50%); opacity: 0; }
+  0% {
+    transform: scale(0.5) translateX(-50%);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.2) translateX(-50%);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) translateX(-50%);
+    opacity: 0;
+  }
 }
