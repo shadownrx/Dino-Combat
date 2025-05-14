@@ -37,10 +37,9 @@ function selectCharacter(src, name) {
     height: "80px"
   });
 
-  showCharacterName(name); // 👈 Mostrar el nombre seleccionado
+  showCharacterName(name);
   startGame();
 }
-
 
 // ✨ Pantallas (transiciones)
 function fadeIn(element) {
@@ -60,12 +59,14 @@ function fadeOut(element, callback) {
 // 🔁 Inicio y reinicio de juego
 function initGame() {
   score = 0;
-  nederCoins = 0;  // Reinicia las monedas al iniciar el juego
-  lastCoinScore = 0;  // Reinicia el puntaje de la última moneda
+  nederCoins = 0;
+  lastCoinScore = 0;
   gameRunning = true;
   obstacle.style.animation = "moveObstacle 2s linear infinite";
   scoreDisplay.textContent = "Puntaje: 0";
   document.getElementById("coins").textContent = `🪙 Neder Coins: ${nederCoins}`;
+  loadProgress();
+  animateDinoIn();
 
   clearInterval(gameInterval);
   gameInterval = setInterval(() => {
@@ -83,7 +84,6 @@ function initGame() {
       scoreDisplay.textContent = "Puntaje: " + score;
       checkAchievements(score);
 
-      // Incrementa monedas cada vez que el puntaje sea múltiplo de 50
       if (score - lastCoinScore >= 50) {
         let coinsToAdd = 1;
         if (score >= 1000) coinsToAdd = 30;
@@ -95,11 +95,11 @@ function initGame() {
         lastCoinScore = score;
         document.getElementById("coins").textContent = `🪙 Neder Coins: ${nederCoins}`;
         showCoinEarned(coinsToAdd);
+        saveProgress(); // ✅ Guardar al ganar monedas
       }
     }
   }, 100);
 }
-
 
 function startGame() {
   startSound.currentTime = 0;
@@ -120,6 +120,7 @@ function retryGame() {
 // ⛔ Game Over y Detención
 function gameOver() {
   stopGame();
+  saveProgress(); // ✅ Guardar al terminar juego
   shakeElement(dino);
   fadeOut(gameScreen, () => {
     finalScore.textContent = "Puntaje final: " + score;
@@ -173,7 +174,6 @@ function backToMenu() {
   fadeOut(characterSelect, () => fadeIn(menu));
 }
 
-
 // 🎮 Controles
 document.addEventListener("keydown", (event) => {
   if (["Space", " ", "ArrowUp"].includes(event.code || event.key)) {
@@ -186,6 +186,7 @@ document.addEventListener("touchstart", jump);
 // 🎵 Música de fondo
 function returnToMenuFromGameOver() {
   stopGame();
+  saveProgress(); // ✅ Guardar si vuelve al menú
   bgm.pause();
   bgm.currentTime = 0;
   startSound.pause();
@@ -245,3 +246,28 @@ function showAchievement(message) {
   document.body.appendChild(achievementMsg);
   setTimeout(() => achievementMsg.remove(), 2500);
 }
+
+function saveProgress() {
+  localStorage.setItem("nederCoins", nederCoins);
+}
+
+function loadProgress() {
+  const savedCoins = localStorage.getItem("nederCoins");
+  if (savedCoins !== null) {
+    nederCoins = parseInt(savedCoins, 10);
+    document.getElementById("coins").textContent = `🪙 Neder Coins: ${nederCoins}`;
+  }
+}
+
+function animateDinoIn() {
+  dino.style.transform = "translateX(-100px)";
+  dino.style.opacity = "0";
+  dino.style.transition = "all 0.5s ease-in-out";
+  setTimeout(() => {
+    dino.style.transform = "translateX(0)";
+    dino.style.opacity = "1";
+  }, 100);
+}
+
+// ✅ Guardar automáticamente al salir o recargar
+window.addEventListener("beforeunload", saveProgress);
