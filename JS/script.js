@@ -4,6 +4,7 @@ let isJumping = false;
 let score = 0;
 let gameInterval = null;
 let gameRunning = false;
+let nederCoins = 0;
 
 // 🎯 Referencias DOM
 const dino = document.getElementById("dino");
@@ -25,7 +26,7 @@ function playMusic() {
 }
 
 // 🧍 Selección de personaje
-function selectCharacter(src) {
+function selectCharacter(src, name) {
   if (!src) return;
   selectedCharacter = src;
   Object.assign(dino.style, {
@@ -35,8 +36,11 @@ function selectCharacter(src) {
     width: "80px",
     height: "80px"
   });
+
+  showCharacterName(name); // 👈 Mostrar el nombre seleccionado
   startGame();
 }
+
 
 // ✨ Pantallas (transiciones)
 function fadeIn(element) {
@@ -56,9 +60,12 @@ function fadeOut(element, callback) {
 // 🔁 Inicio y reinicio de juego
 function initGame() {
   score = 0;
+  nederCoins = 0;  // Reinicia las monedas al iniciar el juego
+  lastCoinScore = 0;  // Reinicia el puntaje de la última moneda
   gameRunning = true;
   obstacle.style.animation = "moveObstacle 2s linear infinite";
   scoreDisplay.textContent = "Puntaje: 0";
+  document.getElementById("coins").textContent = `🪙 Neder Coins: ${nederCoins}`;
 
   clearInterval(gameInterval);
   gameInterval = setInterval(() => {
@@ -74,9 +81,18 @@ function initGame() {
     } else if (gameRunning) {
       score++;
       scoreDisplay.textContent = "Puntaje: " + score;
+
+      // Incrementa monedas cada vez que el puntaje sea múltiplo de 50
+      if (score - lastCoinScore >= 50) {
+        nederCoins++;
+        lastCoinScore = score;  // Actualiza el último puntaje para monedas
+        document.getElementById("coins").textContent = `🪙 Neder Coins: ${nederCoins}`;
+        showCoinEarned();
+      }
     }
   }, 100);
 }
+
 
 function startGame() {
   startSound.currentTime = 0;
@@ -169,4 +185,21 @@ function returnToMenuFromGameOver() {
   startSound.currentTime = 0;
   fadeOut(gameOverScreen, () => fadeIn(menu));
   scoreDisplay.textContent = "Puntaje: 0";
+}
+
+function showCharacterName(name) {
+  const nameBanner = document.createElement("div");
+  nameBanner.innerText = `¡Has elegido a ${name}!`;
+  nameBanner.className = "character-name-banner";
+  document.body.appendChild(nameBanner);
+  setTimeout(() => nameBanner.remove(), 2000);
+}
+
+function showCoinEarned() {
+  const coinMsg = document.createElement("div");
+  coinMsg.className = "coin-earned";
+  coinMsg.innerText = "+1 Neder Coin!";
+  document.body.appendChild(coinMsg);
+  setTimeout(() => coinMsg.remove(), 1000);  // El mensaje desaparece después de 1 segundo
+  console.log("Moneda ganada!"); // Verifica si la función se ejecuta
 }
